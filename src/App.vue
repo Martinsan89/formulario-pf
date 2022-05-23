@@ -31,8 +31,8 @@ export default {
       }
     },
     methods: {
-      ToDataUser(form){
-        let usuario = {...form};
+      ToDataUser(state){
+        let usuario = {...state};
         this.DataUser.push(usuario);
         this.mostrarTabla = true;
       }
