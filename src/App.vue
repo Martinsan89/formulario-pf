@@ -1,5 +1,5 @@
 <template>
-<div class="imgLogo">
+<div class="imgLogo text-center">
   <img class="logoRun" alt="logo Run" src="./assets/logoRun.jpeg">
 </div>
   <FormLogin @submit-form="ToDataUser"

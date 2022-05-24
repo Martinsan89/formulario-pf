@@ -1,15 +1,15 @@
 <template>
     <form class="text-center" @submit.prevent="emitForm">
             <div class="form-row">
-                <h4 class="text-center">Nombre</h4>
+                <h4 class="text-center">Nombre y Apellido</h4>
                 <div class="form-group  text-center">
                     <input type="text" 
                     class="form-control text-center" 
                     placeholder="Ingrese su nombre" 
                     name="Nombre" 
-                    v-model="state.form.nombre"
-                    @keyup="validarForm">
-                    <span v-if="v$.form.nombre.$error" class="alert-danger">{{v$.form.nombre.$errors[0].$message}}</span>
+                    v-model="form.nombre"
+                    @keyup="validarNombre">
+                    <span v-if="error.nombre" class="alert-danger">{{error.nombre}}</span>
                 </div>
             </div>
             <div class="form-row">
@@ -20,8 +20,9 @@
                 id="inputEmail4" 
                 placeholder="Email" 
                 name="Email"  
-                v-model="state.form.email">
-                <span v-if="v$.form.email.$error" class="alert-danger">{{v$.form.email.$errors[0].$message}}</span>
+                v-model="form.email"
+                @keyup="validarEmail">
+                <span v-if="error.email" class="alert-danger">{{error.email}}</span>
                 </div>
                 <div class="form-group ">
                 <h4 class="text-center mt-3">Contrasenia LoRun</h4>
@@ -30,20 +31,22 @@
                 id="Pass" 
                 placeholder="Crea tu contrasenia LoRun" 
                 name="inputPass"  
-                v-model="state.form.pass">
-                <span v-if="v$.form.pass.$error" class="alert-danger">{{v$.form.pass.$errors[0].$message}}</span>
+                v-model="form.pass"
+                @keyup="validarPass">
+                <span v-if="error.pass" class="alert-danger">{{error.pass}}</span>
                 </div>
                 <br>
             </div>    
             <h4 class="text-center mt-3">Seleccione su edad</h4>
-            <div class="row checkbox-row">
+            <div class="row checkbox-row" @mouseover="validarEdad">
                 <div class="col-xl ">
                     <div class="checkbox-inline">
                     <label class="checkbox-inline">
                     <input type="checkbox" 
                     id="adulto" 
                     value="adulto" 
-                    v-model="state.form.edad"> +35</label>
+                    v-model="form.edad"
+                    @mouseout="validarEdad"> +35</label>
                     </div>
                 </div>
                 <div class="row checkbox-row">
@@ -53,10 +56,11 @@
                         <input type="checkbox" 
                         id="joven" 
                         value="joven"  
-                        v-model="state.form.edad"> -35</label>
+                        v-model="form.edad"
+                        @mouseout="validarEdad"> -35</label>
                     </div>
+                <span v-if="error.edad" class="alert-danger">{{error.edad}}</span>
                     </div>
-                <span v-if="v$.form.edad.$error" class="alert-danger">{{v$.form.edad.$errors[0].$message}}</span>
                 </div>
             </div>
             <h4 class="text-center mt-3">Seleccione su genero</h4>
@@ -67,7 +71,7 @@
                     <input type="checkbox" 
                     id="hombre" 
                     value="hombre" 
-                    v-model="state.form.genero"> Masculino</label>
+                    v-model="form.genero"> Masculino</label>
                     </div>
                 </div>
                 <div class="row checkbox-row">
@@ -77,7 +81,7 @@
                         <input type="checkbox" 
                         id="mujer" 
                         value="mujer"   
-                      v-model="state.form.genero"> Femenino</label>
+                      v-model="form.genero"> Femenino</label>
                     </div>
                     </div>
                 </div>
@@ -86,7 +90,7 @@
                 <div class="form-group">
                     <select class="form-control text-center" id="pisada" 
                     name="inputPisada"
-                    v-model="state.form.pisada">
+                    v-model="form.pisada">
                         <option>Pronador - poco arco</option>
                         <option>Neutro - arco normal</option>
                         <option>Supinador - mucho arco</option>
@@ -99,28 +103,26 @@
                     class="form-control text-center" id="peso" 
                     placeholder="180"
                     name="inputPeso" 
-                    v-model="state.form.peso">
+                    v-model="form.peso">
                     <label class="text-center">Altura</label>
                     <input type="number" 
                     class="form-control text-center" id="altura" 
                     placeholder="184"
                     name="inputAltura"
-                    v-model="state.form.altura">
+                    v-model="form.altura">
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">Sign in</button>
+                <span v-if="error.validacion" class="alert-danger">{{error.validacion}}</span>
+                <br>
+                <button type="submit" class="btn btn-primary mt-3">INGRESAR</button>
     </form>
 
 </template>
 
 <script>
-import useValidate from '@vuelidate/core'
-import {required, email, minLength, alphaNum} from '@vuelidate/validators'
-import {reactive, computed} from 'vue'
-
-
 export default {
-    setup(){
-        const state = reactive ({
+    name: "FormLogin",
+    data(){
+        return {
             form:{
                 nombre:'',
                 email:'',
@@ -131,40 +133,59 @@ export default {
                 peso:'',
                 altura:''
             },
-        })
-        
-        const rules = computed (() => {
-            return {
-                form:{
-                    nombre:{required, minLength: minLength(3)},
-                    email:{required, email},
-                    pass:{required, minLength: minLength(4), alphaNum},
-                    edad: {required}
-                }   
+            error: {
+                nombre:'',
+                email:'',
+                pass:'',
+                edad:'',
+                validacion:''
             }
-        })
 
-        const v$ = useValidate(rules, state)
-
-        return {
-            state,
-            v$
         }
-    },
+    },   
     methods:{
         emitForm () {
-            if(this.v$.$validate == true){
-                console.log('Complete el formulario');
-            } else {
-                this.$emit('submit-form', this.state.form);
+            if(!this.form.nombre || !this.form.email || !this.form.pass || !this.form.edad){
+                this.error.validacion = 'Debe completar los campos obligatorios(Nombre, Email, Pass y Edad)';
+            }else {
+                this.$emit('submit-form', this.form);
                 // Reset
-                Object.keys(this.state).forEach(key => this.state[key] = '');
-                this.state.genero = [];
-                this.state.edad = [];
+                Object.keys(this.form).forEach(key => this.form[key] = '');
+                this.form.genero = [];
+                this.form.edad = [];
+                this.error.validacion = '';
+
             }
         },
-        validarForm(){
-            this.v$.$validate();
+        validarNombre(){
+            const fullNameRegExp = /[a-zA-Z]{2,}\s+[a-zA-Z]{2,12}/g;
+            if(this.form.nombre && fullNameRegExp.test(this.form.nombre)){
+                this.error.nombre = '';
+            } else {
+                this.error.nombre = 'Ingresa un nombre y un apellido ';
+            }
+        },
+        validarEmail(){
+            const emailRegExp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+            if(this.form.email && emailRegExp.test(this.form.email)){
+                this.error.email = '';
+            } else {
+                this.error.email = 'Ingresa un email valido (con "@" y ".")';
+            }
+        },
+        validarPass(){
+            if(this.form.pass.length > 4){
+                  this.error.pass = '';
+            } else {
+                this.error.pass = 'Ingresa una contrasenia de 5 caracteres';
+            }
+        },
+        validarEdad(){
+            if(this.form.edad != ''){
+                  this.error.edad = '';
+            } else {
+                this.error.edad = 'Ingresa su edad';
+            }
         }
     }
 
