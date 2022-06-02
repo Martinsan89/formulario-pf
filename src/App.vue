@@ -1,42 +1,42 @@
 <template>
 <div class="imgLogo text-center">
   <img class="logoRun" alt="logo Run" src="./assets/logoRun.jpeg">
-</div>
-  <FormLogin @submit-form="ToDataUser"
-  />
+  <FormLogin />
 
-  <div v-if="mostrarTabla">
+
+</div>
+  <!-- <div v-if="mostrarTabla">
   <DataUsers 
   class="table"
   :DataUser="DataUser">
   </DataUsers>
-  </div>
+  </div> -->
 
 
 </template>
 
 <script>
 import FormLogin from './components/FormLogin.vue'
-import DataUsers from './components/DataUsers.vue'
+// import DataUsers from './components/DataUsers.vue'
 
 export default {
   name: 'App',
   components: {
-    FormLogin, DataUsers
+    FormLogin
   },
-    data(){
-      return{
-        DataUser:[],
-        mostrarTabla: false
-      }
-    },
-    methods: {
-      ToDataUser(state){
-        let usuario = {...state};
-        this.DataUser.push(usuario);
-        this.mostrarTabla = true;
-      }
-    }
+    // data(){
+    //   return{
+    //     DataUser:[],
+    //     mostrarTabla: false
+    //   }
+    // },
+    // methods: {
+    //   ToDataUser(form){
+    //     let usuario = {...form};
+    //     this.DataUser.push(usuario);
+    //     this.mostrarTabla = true;
+    //   }
+    // }
 }
 </script>
 

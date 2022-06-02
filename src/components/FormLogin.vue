@@ -7,7 +7,7 @@
                     class="form-control text-center" 
                     placeholder="Ingrese su nombre" 
                     name="Nombre" 
-                    v-model="form.nombre"
+                    v-model="$store.state.Form.form.nombre"
                     @keyup="validarNombre">
                     <span v-if="error.nombre" class="alert-danger">{{error.nombre}}</span>
                 </div>
@@ -20,7 +20,7 @@
                 id="inputEmail4" 
                 placeholder="Email" 
                 name="Email"  
-                v-model="form.email"
+                v-model="$store.state.Form.form.email"
                 @keyup="validarEmail">
                 <span v-if="error.email" class="alert-danger">{{error.email}}</span>
                 </div>
@@ -31,7 +31,7 @@
                 id="Pass" 
                 placeholder="Crea tu contrasenia LoRun" 
                 name="inputPass"  
-                v-model="form.pass"
+                v-model="$store.state.Form.form.pass"
                 @keyup="validarPass">
                 <span v-if="error.pass" class="alert-danger">{{error.pass}}</span>
                 </div>
@@ -45,7 +45,7 @@
                     <input type="checkbox" 
                     id="adulto" 
                     value="adulto" 
-                    v-model="form.edad"
+                    v-model="$store.state.Form.form.edad"
                     @mouseout="validarEdad"> +35</label>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
                         <input type="checkbox" 
                         id="joven" 
                         value="joven"  
-                        v-model="form.edad"
+                        v-model="$store.state.Form.form.edad"
                         @mouseout="validarEdad"> -35</label>
                     </div>
                 <span v-if="error.edad" class="alert-danger">{{error.edad}}</span>
@@ -71,7 +71,7 @@
                     <input type="checkbox" 
                     id="hombre" 
                     value="hombre" 
-                    v-model="form.genero"> Masculino</label>
+                    v-model="$store.state.Form.form.genero"> Masculino</label>
                     </div>
                 </div>
                 <div class="row checkbox-row">
@@ -81,7 +81,7 @@
                         <input type="checkbox" 
                         id="mujer" 
                         value="mujer"   
-                      v-model="form.genero"> Femenino</label>
+                      v-model="$store.state.Form.form.genero"> Femenino</label>
                     </div>
                     </div>
                 </div>
@@ -90,7 +90,7 @@
                 <div class="form-group">
                     <select class="form-control text-center" id="pisada" 
                     name="inputPisada"
-                    v-model="form.pisada">
+                    v-model="$store.state.Form.form.pisada">
                         <option>Pronador - poco arco</option>
                         <option>Neutro - arco normal</option>
                         <option>Supinador - mucho arco</option>
@@ -103,13 +103,13 @@
                     class="form-control text-center" id="peso" 
                     placeholder="180"
                     name="inputPeso" 
-                    v-model="form.peso">
+                    v-model="$store.state.Form.form.peso">
                     <label class="text-center">Altura</label>
                     <input type="number" 
                     class="form-control text-center" id="altura" 
                     placeholder="184"
                     name="inputAltura"
-                    v-model="form.altura">
+                    v-model="$store.state.Form.form.altura">
                 </div>
                 <span v-if="error.validacion" class="alert-danger">{{error.validacion}}</span>
                 <br>
@@ -119,74 +119,34 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex';
 export default {
     name: "FormLogin",
-    data(){
-        return {
-            form:{
-                nombre:'',
-                email:'',
-                pass:'',
-                genero:[],
-                edad:[],
-                pisada:'',
-                peso:'',
-                altura:''
-            },
-            error: {
-                nombre:'',
-                email:'',
-                pass:'',
-                edad:'',
-                validacion:''
-            }
-
-        }
+    computed:{
+        ...mapState('Form', ['form', 'error'])
+        
     },   
     methods:{
+        ...mapActions('Form', ['validarNombre', 'validarEmail', 'validarPass', 'validarEdad']),
+
         emitForm () {
-            if(!this.form.nombre || !this.form.email || !this.form.pass || !this.form.edad){
-                this.error.validacion = 'Debe completar los campos obligatorios(Nombre, Email, Pass y Edad)';
+            if(!this.$store.state.Form.form.nombre || !this.$store.state.Form.form.email || !this.$store.state.Form.form.pass || !this.$store.state.Form.form.edad){
+                this.$store.state.Form.error.validacion = 'Debe completar los campos obligatorios(Nombre, Email, Pass y Edad)';
             }else {
-                this.$emit('submit-form', this.form);
+                this.$store.dispatch('toDataUser');
+
+
+
                 // Reset
-                Object.keys(this.form).forEach(key => this.form[key] = '');
-                this.form.genero = [];
-                this.form.edad = [];
-                this.error.validacion = '';
+                Object.keys(this.$store.state.Form.form).forEach(key => this.$store.state.Form.form[key] = '');
+                this.$store.state.Form.form.genero = [];
+                this.$store.state.Form.form.edad = [];
+                this.$store.state.Form.error.validacion = '';
 
             }
         },
-        validarNombre(){
-            const fullNameRegExp = /[a-zA-Z]{2,}\s+[a-zA-Z]{2,12}/g;
-            if(this.form.nombre && fullNameRegExp.test(this.form.nombre)){
-                this.error.nombre = '';
-            } else {
-                this.error.nombre = 'Ingresa un nombre y un apellido ';
-            }
-        },
-        validarEmail(){
-            const emailRegExp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-            if(this.form.email && emailRegExp.test(this.form.email)){
-                this.error.email = '';
-            } else {
-                this.error.email = 'Ingresa un email valido (con "@" y ".")';
-            }
-        },
-        validarPass(){
-            if(this.form.pass.length > 4){
-                  this.error.pass = '';
-            } else {
-                this.error.pass = 'Ingresa una contrasenia de 5 caracteres';
-            }
-        },
-        validarEdad(){
-            if(this.form.edad != ''){
-                  this.error.edad = '';
-            } else {
-                this.error.edad = 'Ingresa su edad';
-            }
-        }
+        
+        
     }
 
 }
