@@ -1,42 +1,25 @@
 <template>
 <div class="imgLogo text-center">
   <img class="logoRun" alt="logo Run" src="./assets/logoRun.jpeg">
-  <FormLogin />
+  <br>
+  <div class="usuario">
+    <router-link to="/DataUser" class="link">Ver usuarios</router-link>
+  </div>
+  <router-view />
+
 
 
 </div>
-  <!-- <div v-if="mostrarTabla">
-  <DataUsers 
-  class="table"
-  :DataUser="DataUser">
-  </DataUsers>
-  </div> -->
 
 
 </template>
 
 <script>
-import FormLogin from './components/FormLogin.vue'
-// import DataUsers from './components/DataUsers.vue'
+
 
 export default {
   name: 'App',
-  components: {
-    FormLogin
-  },
-    // data(){
-    //   return{
-    //     DataUser:[],
-    //     mostrarTabla: false
-    //   }
-    // },
-    // methods: {
-    //   ToDataUser(form){
-    //     let usuario = {...form};
-    //     this.DataUser.push(usuario);
-    //     this.mostrarTabla = true;
-    //   }
-    // }
+  
 }
 </script>
 
@@ -54,5 +37,15 @@ export default {
   background-color: burlywood;
   height: 5rem;
   margin-top: 3rem;
+}
+.usuario{
+  margin: 1rem 2rem;
+  border-radius: 2rem;
+}
+.link {
+  background-color: white;
+  color: black;
+  padding: 1rem;
+  border-radius: 2rem;
 }
 </style>

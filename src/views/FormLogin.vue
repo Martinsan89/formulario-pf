@@ -1,5 +1,5 @@
 <template>
-    <form class="text-center" @submit.prevent="emitForm">
+    <form class="text-center" @submit.prevent="validarForm">
             <div class="form-row">
                 <h4 class="text-center">Nombre y Apellido</h4>
                 <div class="form-group  text-center">
@@ -113,7 +113,11 @@
                 </div>
                 <span v-if="error.validacion" class="alert-danger">{{error.validacion}}</span>
                 <br>
+                <div v-if="confirmado" class="confirmado">
+                    <span class="text">{{confirmado}}</span>
+                </div>
                 <button type="submit" class="btn btn-primary mt-3">INGRESAR</button>
+                
     </form>
 
 </template>
@@ -122,36 +126,27 @@
 import { mapState, mapActions } from 'vuex';
 export default {
     name: "FormLogin",
+    mounted(){
+        this.resetConfirmado();
+    },
     computed:{
-        ...mapState('Form', ['form', 'error'])
-        
+        ...mapState('Form', ['form', 'error', 'confirmado'])  
     },   
     methods:{
-        ...mapActions('Form', ['validarNombre', 'validarEmail', 'validarPass', 'validarEdad']),
-
-        emitForm () {
-            if(!this.$store.state.Form.form.nombre || !this.$store.state.Form.form.email || !this.$store.state.Form.form.pass || !this.$store.state.Form.form.edad){
-                this.$store.state.Form.error.validacion = 'Debe completar los campos obligatorios(Nombre, Email, Pass y Edad)';
-            }else {
-                this.$store.dispatch('toDataUser');
-
-
-
-                // Reset
-                Object.keys(this.$store.state.Form.form).forEach(key => this.$store.state.Form.form[key] = '');
-                this.$store.state.Form.form.genero = [];
-                this.$store.state.Form.form.edad = [];
-                this.$store.state.Form.error.validacion = '';
-
-            }
-        },
-        
-        
+        ...mapActions('Form', ['validarNombre', 'validarEmail', 'validarPass', 'validarEdad', 'validarForm', 'resetConfirmado']),        
     }
 
 }
 </script>
 
-<style>
+<style scoped>
+.confirmado {
+    background-color: green;
+    margin: 1rem 2rem;
+}
+.text {
+    color: aliceblue;
+}
+
 
 </style>
