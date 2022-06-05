@@ -1,13 +1,12 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import Form from "./modules/Form";
 const axios = require("axios");
 const apiURL = "https://628e2cc9a339dfef87a8fd8c.mockapi.io/api";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  //   strict: true,
+  strict: true,
   state: {
     users: [],
   },
@@ -42,8 +41,5 @@ export default new Vuex.Store({
         commit("setUsers", result);
       }
     },
-  },
-  modules: {
-    Form,
   },
 });
