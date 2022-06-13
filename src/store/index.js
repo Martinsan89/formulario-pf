@@ -22,23 +22,11 @@ export default new Vuex.Store({
   },
   actions: {
     async getUsers({ commit }) {
-      let result = null;
-      result = await axios
-        .get(`${apiURL}/usuario`)
-        .then((response) => {
-          let result = response.data.map((item) => {
-            let { nombre, email, pass, edad, genero, pisada, peso, altura } =
-              item;
-            return { nombre, email, pass, edad, genero, pisada, peso, altura };
-          });
-          return result;
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-
-      if (result != null) {
-        commit("setUsers", result);
+      try {
+        const { data } = await axios.get(`${apiURL}/usuario`);
+        data && commit("setUsers", data);
+      } catch (err) {
+        console.log(err);
       }
     },
   },

@@ -17,7 +17,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr v-for="user in users" :key="user.id" class="text"> 
+    <tr v-for="(user, index) in usuarios" :key="index" class="text"> 
       <th>{{user.nombre}}</th>
       <th>{{user.email}}</th>
       <th>{{user.pass}}</th>
@@ -33,21 +33,27 @@
 </div>
 </template>
 
-<script>
-import { mapState, mapActions } from 'vuex'
-export default {
-    name: "DataUser",
-    mounted() {
-      this.getUsers();
-    },
-    methods: {
-      ...mapActions(['getUsers'])
-    },
-    computed: {
-      ...mapState(['users'])
-    }
+<script setup>
+import { ref, onMounted } from 'vue';
+const axios = require("axios");
+const apiURL = "https://628e2cc9a339dfef87a8fd8c.mockapi.io/api";
 
-}
+let usuarios = ref(null);
+
+const loadDataUsers = async () => {
+    try {
+      const dataUser = await axios.get(`${apiURL}/usuario`);
+      return (usuarios = dataUser),
+      console.log(usuarios)
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+onMounted(() => {
+  loadDataUsers();
+})  
+
 </script>
 
 <style scoped>
