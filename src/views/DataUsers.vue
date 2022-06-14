@@ -43,8 +43,7 @@ let usuarios = ref(null);
 const loadDataUsers = async () => {
     try {
       const dataUser = await axios.get(`${apiURL}/usuario`);
-      return (usuarios = dataUser),
-      console.log(usuarios)
+      return usuarios.value = dataUser.data;
     } catch (err) {
       console.log(err);
     }

@@ -104,11 +104,11 @@
                 <span v-if="v$.value" class="alert-danger">{{error.validacion}}</span>
                 <br>
                 <div v-if="state.confirmado" class="confirmado">
-                    <span class="text">{{state.confirmado}}</span>
+                    <span class="text">Usuario registrado!</span>
                 </div>
                 <button type="submit" 
                 class="btn btn-primary mt-3"
-                @click="validarForm"
+                @click.prevent="validarForm"
                 >INGRESAR</button>
                 
     </form>
@@ -124,7 +124,7 @@ import { reactive, computed } from 'vue';
 const axios = require("axios");
 const apiURL = "https://628e2cc9a339dfef87a8fd8c.mockapi.io/api";
 
-const state = reactive ({
+let state = reactive ({
     usuario: {
         nombre: '',
         email: '',
@@ -138,7 +138,7 @@ const state = reactive ({
     error: {
         validacion: "",
     },
-    confirmado: "",
+    confirmado: false,
 });
 
 const rules = computed (() => {
@@ -159,7 +159,7 @@ const rules = computed (() => {
 
     }
 });
-const v$ = useValidate(state, rules);
+const v$ = useValidate(rules, state);
 
 const validarForm = () => {
     v$.value.$validate();
@@ -177,7 +177,7 @@ const validarForm = () => {
             state.usuario.edad = [];
             state.error.validacion = "";
 
-            state.confirmado = "Usuario agregado correctamente";
+            state.confirmado = true;
     } else {
         state.error.validacion =
             "Debe completar los campos obligatorios(Nombre, Email, Pass y Edad)";
