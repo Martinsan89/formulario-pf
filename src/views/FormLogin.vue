@@ -162,7 +162,7 @@ const rules = computed (() => {
 const v$ = useValidate(rules, state);
 
 const validarForm = () => {
-    // v$.value.$validate();
+    v$.value.$validate();
     if (!v$.value.$error){
          const usuario = state.usuario;
             axios
