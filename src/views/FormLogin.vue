@@ -7,7 +7,7 @@
                     class="form-control text-center" 
                     placeholder="Ingrese su nombre" 
                     name="Nombre" 
-                    v-model="state.usuario.nombre"
+                    v-model="v$.usuario.nombre.$model"
                     >
                     <span v-for="(error, index) in v$.usuario.nombre.$errors" :key="index"  class="alert-danger">{{error.$message}}</span>
                 </div>
@@ -20,7 +20,7 @@
                 id="inputEmail4" 
                 placeholder="Email" 
                 name="Email"  
-                v-model="state.usuario.email"
+                v-model="v$.usuario.email.$model"
                 >
                 <span v-for="(error, index) in v$.usuario.email.$errors" :key="index" class="alert-danger">{{error.$message}}</span>
                 </div>
@@ -31,7 +31,7 @@
                 id="Pass" 
                 placeholder="Crea tu contrasenia LoRun" 
                 name="inputPass"  
-                v-model="state.usuario.pass"
+                v-model="v$.usuario.pass.$model"
                 >
                 <span v-for="(error, index) in v$.usuario.pass.$errors" :key="index" class="alert-danger">{{error.$message}}</span>
                 </div>
@@ -55,7 +55,6 @@
                         v-model="state.usuario.edad"
                         > -35</label>
                     </div>
-                <!-- <span v-if="error.edad" class="alert-danger">{{error.edad}}</span> -->
                 </div>
             </div>
             <h4 class="text-center mt-3">Seleccione su genero</h4>
@@ -120,11 +119,11 @@
 import useValidate from '@vuelidate/core';
 import { required, email, minLength, helpers } from '@vuelidate/validators';
 import { reactive, computed } from 'vue';
+import axios from 'axios';
 
-const axios = require("axios");
 const apiURL = "https://628e2cc9a339dfef87a8fd8c.mockapi.io/api";
 
-let state = reactive ({
+const state = reactive ({
     usuario: {
         nombre: '',
         email: '',
@@ -145,7 +144,8 @@ const rules = computed (() => {
     return {
         usuario: {
             nombre: {
-            required: helpers.withMessage('Ingrese su nombre y apellido', required)
+            required: helpers.withMessage('Ingrese su nombre y apellido', required),
+            minLength: helpers.withMessage('Debe tener al menos 3 caracteres', minLength(3))
         },
         email: {
             required: helpers.withMessage('Ingrese su email', required),
@@ -153,7 +153,7 @@ const rules = computed (() => {
         },
         pass: {
             required: helpers.withMessage('Ingrese su contraseña', required),
-            minLength: helpers.withMessage('Debe tener al menos 5 caracteres', minLength(5)),
+            minLength: helpers.withMessage('Debe tener al menos 5 caracteres', minLength(5))
         }
         }    
 
@@ -162,7 +162,7 @@ const rules = computed (() => {
 const v$ = useValidate(rules, state);
 
 const validarForm = () => {
-    v$.value.$validate();
+    // v$.value.$validate();
     if (!v$.value.$error){
          const usuario = state.usuario;
             axios
@@ -182,13 +182,7 @@ const validarForm = () => {
         state.error.validacion =
             "Debe completar los campos obligatorios(Nombre, Email, Pass y Edad)";
     }
-};
-// const resetConfirmado = () => {
-//     state.confirmado = false;
-// };
-// onMounted(() => {
-//     resetConfirmado;
-// });        
+};      
 </script>
 
 <style scoped>

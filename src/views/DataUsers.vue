@@ -35,10 +35,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-const axios = require("axios");
+import axios from 'axios';
 const apiURL = "https://628e2cc9a339dfef87a8fd8c.mockapi.io/api";
 
-let usuarios = ref(null);
+const usuarios = ref(null);
 
 const loadDataUsers = async () => {
     try {
