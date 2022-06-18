@@ -176,7 +176,7 @@ const validarForm = () => {
             state.usuario.genero = [];
             state.usuario.edad = [];
             state.error.validacion = "";
-
+            v$.value.$reset();
             state.confirmado = true;
     } else {
         state.error.validacion =
